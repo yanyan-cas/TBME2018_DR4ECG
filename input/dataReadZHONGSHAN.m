@@ -2,7 +2,7 @@ function [ M , frequency] = zhongshan_reader( filename )
 %read the ECG data.
 %filename
 %M--samples
-PATH = '/Users/Yanyan/Documents/MATLAB/ECG_DATASET/ECG_sun/';
+PATH = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/ECG_sun/';
 filename = char(filename);
 ECGFILE= strcat(filename,'.ECG');   
 infPath = fullfile(PATH, ECGFILE);

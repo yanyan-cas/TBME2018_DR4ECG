@@ -1,4 +1,4 @@
-function [ M,ANNOT,AFANNOT,ATRTIME,AFATRTIME ] = LT_AF_reader( filename )
+function [ M,ANNOT,AFANNOT,ATRTIME,AFATRTIME ] = rawreaderLongTerm_AF( filename )
 %LT_READER Summary of this function goes here
 %   Detailed explanation goes here
 %filename

@@ -16,6 +16,6 @@ for i = 1 : size(dataset,1)
     filename = dataset{i};
     marfile = strcat(filename,'.mat');
     marfile = fullfile(folder,marfile);
-    [M,TIME,ANNOT,ATRTIME] = readdata(filename);  % read the '212' format data
+    [M,TIME,ANNOT,ATRTIME] = readerMITBIH_Arrhythmia(filename);  % read the '212' format data
     save(marfile,'M','TIME','ANNOT','ATRTIME');    
 end

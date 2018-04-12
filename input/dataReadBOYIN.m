@@ -3,7 +3,7 @@ function [M, ATRTIME] = boyin_reader(filename)
 %filename
 %M--samples
 %ATRTIME--
-PATH = '/Users/Yanyan/Documents/MATLAB/ECG_DATASET/ECG_boyin/';
+PATH = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/ECG_boyin/';
 filename = char(filename);
 INFFILE= strcat(lower(filename),'.inf');      % .inf
 RRFILE= strcat(lower(filename),'.rr');        % .rr

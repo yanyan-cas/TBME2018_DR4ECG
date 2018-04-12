@@ -1,4 +1,4 @@
-function [M,TIME,ANNOT,ATRTIME] = MIT_arr_reader(filename)
+function [M,ANNOT,ATRTIME] = readerMITBIH_NSR( filename )
 %read the data and annotation of MIT_BIH.
 %filename 100,102,102...
 %M--samples
@@ -10,7 +10,7 @@ function [M,TIME,ANNOT,ATRTIME] = MIT_arr_reader(filename)
 %  Klaus Rheinberger (University of Innsbruck)
 
 filename = char(filename);
-PATH = '../MIT-BIH_Arr';
+PATH = '../MIT-BIH_NSR';
 HEADERFILE= strcat(filename,'.hea');      % .hea
 ATRFILE= strcat(filename,'.atr');         % .atr
 DATAFILE=strcat(filename,'.dat');         % .dat
@@ -53,11 +53,8 @@ if M(1,:) ~= firstvalue
     error('inconsistency in the first bit values');
 end
 
-M( : , 1) = (M( : , 1) - zero_line(1)) / gain(1);
-M( : , 2) = (M( : , 2) - zero_line(2)) / gain(2);
-TIME = (0:(SAMPLENUM-1)) / frequency;
-TIME = TIME';
-
+M( : , 1) = (M( : , 1)) / 200;
+M( : , 2) = (M( : , 2)) / 200;
 %% deal with .atr file
 atrPath = fullfile(PATH, ATRFILE);  % attribute file with annotation data
 atr_file = fopen(atrPath,'r');
@@ -92,6 +89,6 @@ while i <= saa
 end;
 ANNOT(length(ANNOT)) = [];       % last line = EOF (=0)
 ATRTIME(length(ATRTIME)) = [];   % last line = EOF
-ATRTIME= (cumsum(ATRTIME)) / frequency;
-
+ATRTIME= cumsum(ATRTIME);
 end
+
