@@ -1,4 +1,4 @@
-function [M,ANNOT,ATRTIME] = readerMITBHI_AF( filename )
+function [M,ANNOT,ATRTIME] = readerMITBHI_AtrialFibrilation( filename )
 %read the data and RR of ECG data.
 %filename
 %M--samples
@@ -6,7 +6,7 @@ function [M,ANNOT,ATRTIME] = readerMITBHI_AF( filename )
 %ANNOT--annotation
 %ATRTIME--
 
-PATH = '../MIT-BIH_AF';
+PATH = '../MITBIH_AtrialFibrilation';
 filename = char(filename);
 HEADERFILE= strcat(filename,'.hea');    % .hea
 ATRFILE= strcat(filename,'.atr');       % .atr

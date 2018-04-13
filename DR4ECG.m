@@ -28,10 +28,11 @@ function DR4ECG
 %   LTST:  Long-Term ST Database
 %   
 
-
+    addpath('/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET');
+    
     % Collect ecg data
     disp('Reading data files');
-    datasets = {'MITBIH_AF','MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'LTAF', 'PICTArrhythmia'};
+    datasets = {'MITBIH_AtrialFibrilation','MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'LTAF', 'PICTArrhythmia'};
     disp('Testing data generation functions...');
 
     for i = 1 : length(datasets)

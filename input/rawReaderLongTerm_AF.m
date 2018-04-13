@@ -7,7 +7,7 @@ function [ M,ANNOT,AFANNOT,ATRTIME,AFATRTIME ] = rawreaderLongTerm_AF( filename 
 %ANNOT--annotation
 %ATRTIME--
 
-PATH = '../LT_AF';
+PATH = '../LT_AtrialFibrilation';
 filename = char(filename);
 HEADERFILE= strcat(filename,'.hea');    % .hea
 ATRFILE= strcat(filename,'.atr');       % .atr

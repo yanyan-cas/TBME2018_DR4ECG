@@ -9,26 +9,25 @@ function readDatasets [datasetName, samples]
     if FLAG == 0
         switch dataSet   
             case 'MITBIH_AF'        
-                transferMITBIH_AF;
+                dataReadMITBIH_AtrialFibrilation;
             case 'MITBIH_Arrhythmia'
-                transferMITBIH_Arrhythmia;
+                dataReadMITBIH_Arrhythmia;
             case 'MITBIH_LT'
-                transferMITBIH_LongTerm;
+                dataReadMITBIH_LongTerm;
             case  'MITBIH_NSR'
-                transferMITBIH_NSR;
+                dataReadMITBIH_NSR;
             case 'LT_AF'
-                transferLongTerm_AF;
+                dataReadLongTerm_AF;
             case 'PICTArrhythmia'
-                transferPICTArrhythmia;
+                dataReadPICTArrhythmia;
             otherwise
                 disp(e);
                 warning('Nothing input ...');
                 pause
         end
-
     end
-
-
+    
+    
 
 
 end

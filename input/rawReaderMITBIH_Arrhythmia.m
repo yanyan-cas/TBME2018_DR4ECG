@@ -1,4 +1,4 @@
-function [M,TIME,ANNOT,ATRTIME] = readerMITBIH_Arrhythmia(filename)
+function [M,TIME,ANNOT,ATRTIME] = rawReaderMITBIH_Arrhythmia(filename)
 %read the data and annotation of MIT_BIH.
 %filename 100,102,102...
 %M--samples
@@ -10,8 +10,8 @@ function [M,TIME,ANNOT,ATRTIME] = readerMITBIH_Arrhythmia(filename)
 %  Klaus Rheinberger (University of Innsbruck)
 
 filename = char(filename);
-PATH = '../MIT-BIH_Arr';
-HEADERFILE= strcat(filename,'.hea');      % .hea
+PATH = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/MITBIH_Arrhythmia';
+HEADERFILE= strcat(filename,'.hea.txt');      % .hea
 ATRFILE= strcat(filename,'.atr');         % .atr
 DATAFILE=strcat(filename,'.dat');         % .dat
 

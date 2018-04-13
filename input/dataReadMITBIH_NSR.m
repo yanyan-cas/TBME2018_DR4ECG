@@ -1,5 +1,5 @@
-folder = '../MIT-BIH_NSR/';
-target_folder = '../MIT-BIH_NSR_mat';
+folder = '../MITBIH_NSR/';
+target_folder = '../MITTBIH_NSR_MAT';
 % scan all the .dat file
 path = strcat(folder,'*.dat');
 files = dir(path);
@@ -14,7 +14,7 @@ for i = 1 : len
     marfile = strcat(NAME,'.mat');
     marfile = fullfile(target_folder,marfile);
      % Datafiles{i} = NAME;
-    [M,AANNOT,AATRTIME] = readerMITBIH_NSR( NAME );  % read the '212' format data
+    [M,AANNOT,AATRTIME] = rawReaderMITBIH_NSR( NAME );  % read the '212' format data
     ATRTIME = AATRTIME(1);
     ANNOT = [0];
     save(marfile,'M','ANNOT','ATRTIME');    

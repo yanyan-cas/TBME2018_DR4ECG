@@ -1,5 +1,5 @@
-folder = '../MIT-BIH_AF/';
-target_folder = '../MIT-BIH_AF_mat';
+folder = '../MITBIH_AtrialFibrilation/';
+target_folder = '../MITBIH_AtrialFibrilation_MAT';
 % scan all the .dat file
 path = strcat(folder,'*.dat');
 files = dir(path);
@@ -14,6 +14,6 @@ for i = 1 : len
     marfile = strcat(NAME,'.mat');
     marfile = fullfile(target_folder,marfile);
      % Datafiles{i} = NAME;
-    [M,ANNOT,ATRTIME] = readerMITBHI_AF( NAME );  % read the '212' format data
+    [M,ANNOT,ATRTIME] = rawReaderMITBHI_AtrialFibrilation( NAME );  % read the '212' format data
     save(marfile,'M','ANNOT','ATRTIME');    
 end

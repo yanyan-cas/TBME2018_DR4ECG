@@ -1,5 +1,5 @@
-folder = '../LT_AF/';
-target_folder = '../LT_AF_mat';
+folder = '../LT_AtrialFibrilation/';
+target_folder = '../LT_AtrialFibrilation_MAT';
 % scan all the .dat file
 path = strcat(folder,'*.dat');
 files = dir(path);
@@ -14,6 +14,6 @@ for i = 1 : len
     marfile = strcat(NAME,'.mat');
     marfile = fullfile(target_folder,marfile);
      % Datafiles{i} = NAME;
-    [ M,AFANNOT,ANNOT,AFATRTIME,ATRTIME ] = readerLongTerm_AF( NAME );  % read the '212' format data
+    [ M,AFANNOT,ANNOT,AFATRTIME,ATRTIME ] = rawReaderLongTerm_AF( NAME );  % read the '212' format data
     save(marfile,'M','ANNOT','ATRTIME');    
 end

@@ -10,7 +10,7 @@ function [M,ANNOT,ATRTIME] = readerMITBIH_NSR( filename )
 %  Klaus Rheinberger (University of Innsbruck)
 
 filename = char(filename);
-PATH = '../MIT-BIH_NSR';
+PATH = '../MITBIH_NSR';
 HEADERFILE= strcat(filename,'.hea');      % .hea
 ATRFILE= strcat(filename,'.atr');         % .atr
 DATAFILE=strcat(filename,'.dat');         % .dat

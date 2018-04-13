@@ -11,11 +11,11 @@ dataset = {'100';'101';'102';'103';'104';'105';'106';'107';'108';'109';'111';'11
     '210';'212';'213';'214';'215';'217';'219';'220';'221';'222';'223';'228';'230';'231';'232';'233';'234'};
 %%-------------------------------------------------------------------------
 %save file in this folder
-folder = '../MIT-BIH_Arr_mat';
+folder = '../MITBIH_Arrhythmia_MAT';
 for i = 1 : size(dataset,1)
     filename = dataset{i};
     marfile = strcat(filename,'.mat');
     marfile = fullfile(folder,marfile);
-    [M,TIME,ANNOT,ATRTIME] = readerMITBIH_Arrhythmia(filename);  % read the '212' format data
+    [M,TIME,ANNOT,ATRTIME] = rawReaderMITBIH_Arrhythmia(filename);  % read the '212' format data
     save(marfile,'M','TIME','ANNOT','ATRTIME');    
 end
