@@ -1,5 +1,7 @@
-folder = '../MITBIH_NSR/';
-target_folder = '../MITTBIH_NSR_MAT';
+%For NSR dataset, normal beats most
+
+folder = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/MITBIH_NSR/';
+target_folder = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/MITTBIH_NSR_MAT';
 % scan all the .dat file
 path = strcat(folder,'*.dat');
 files = dir(path);

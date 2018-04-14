@@ -1,4 +1,4 @@
-function [M,ANNOT,ATRTIME] = readerMITBHI_AtrialFibrilation( filename )
+function  [M,ATRTIME,ANNOT,ATRTIME]= rawReaderMITBHI_AtrialFibrilation( filename )
 %read the data and RR of ECG data.
 %filename
 %M--samples
@@ -6,7 +6,7 @@ function [M,ANNOT,ATRTIME] = readerMITBHI_AtrialFibrilation( filename )
 %ANNOT--annotation
 %ATRTIME--
 
-PATH = '../MITBIH_AtrialFibrilation';
+PATH = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/MITBIH_AtrialFibrilation';
 filename = char(filename);
 HEADERFILE= strcat(filename,'.hea');    % .hea
 ATRFILE= strcat(filename,'.atr');       % .atr

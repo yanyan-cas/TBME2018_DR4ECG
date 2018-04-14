@@ -31,7 +31,7 @@ for k = 1 : channel
     valid_bit(k) = A(3);          
     zero_line(k) = A(4);      
     firstvalue(k) = A(5);
-end;
+end
 fclose(hea_file);
 if code_format ~= [212,212]
     error('binary formats different to 212.');
@@ -87,9 +87,9 @@ while i <= saa
     else
         ATRTIME=[ATRTIME;bitshift(bitand(A(i,2),3),8)+A(i,1)];
         ANNOT=[ANNOT;bitshift(A(i,2),-2)];
-   end;
+    end
    i=i+1;
-end;
+end
 ANNOT(length(ANNOT)) = [];       % last line = EOF (=0)
 ATRTIME(length(ATRTIME)) = [];   % last line = EOF
 ATRTIME= (cumsum(ATRTIME)) / frequency;

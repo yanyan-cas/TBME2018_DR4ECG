@@ -1,5 +1,5 @@
-folder = '../MITBIH_AtrialFibrilation/';
-target_folder = '../MITBIH_AtrialFibrilation_MAT';
+folder = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/MITBIH_AtrialFibrilation/';
+target_folder = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/MITBIH_AtrialFibrilation_MAT';
 % scan all the .dat file
 path = strcat(folder,'*.dat');
 files = dir(path);

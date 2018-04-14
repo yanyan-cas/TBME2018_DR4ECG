@@ -11,7 +11,7 @@ dataset = {'100';'101';'102';'103';'104';'105';'106';'107';'108';'109';'111';'11
     '210';'212';'213';'214';'215';'217';'219';'220';'221';'222';'223';'228';'230';'231';'232';'233';'234'};
 %%-------------------------------------------------------------------------
 %save file in this folder
-folder = '../MITBIH_Arrhythmia_MAT';
+folder = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/MITBIH_Arrhythmia_MAT';
 for i = 1 : size(dataset,1)
     filename = dataset{i};
     marfile = strcat(filename,'.mat');
