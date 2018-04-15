@@ -33,28 +33,20 @@ function DR4ECG
     % Collect ecg data
     disp('Reading data files');
     %datasets = {'MITBIH_AtrialFibrilation','MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'LTAF', 'PICTArrhythmia'};
-    datasets = {'MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'PICTArrhythmia'};
+    datasets = {'MITBIH_Arrhythmia'}; %, 'MITBIH_LT', 'PICTArrhythmia'
+    dataFlag.MITARRHY = 1;
+    dataFlag.MITLT = 1;
+    dataFlag.MITPICT = 1;
     disp('Testing data generation functions...');
 
-    for i = 1 : length(datasets)
-        try
-            X = readDatasets(datasets{i}, 500);
-        catch e
-            disp(e);
-            warning(['Collection of data set ' datasets{i} ' failed! Press any key to continue tests...']);
-            pause
-        end
-    end
+    %% 1. Raw Data input
+    %
+    X = readDatasets(datasets{1}, dataFlag);
     
-%     for i=1:length(datasets)
-%         try        
-%             X = generate_data(datasets{i}, 500);
-%         catch e
-%             disp(e);
-%             warning(['Generation of data set ' datasets{i} ' failed! Press any key to continue tests...']);
-%             pause
-%         end
-%     end
+    %% 2. Data Sample Extraction
+    DATA = preprocessing(datasets{1}, X);
+    
+    
     
      % Test prewhitening
     disp('Testing prewhitening...');
