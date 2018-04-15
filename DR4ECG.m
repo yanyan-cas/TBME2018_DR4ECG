@@ -19,9 +19,9 @@ function DR4ECG
 % of Sciences.
 
 %   MITBIH_AF:   The MIT-BIH Atrial Fibrillation Database
-%   MITBIH_Arrhythmia: MIT-BIH Arrhythmia Database
-%   MITBIH_LT: The MIT-BIH Long Term Database
-%   MITBIH_NSR: The MIT-BIH Normal Sinus Rhythm Database 
+%   MITBIH_Arrhythmia: MIT-BIH Arrhythmia Database  **
+%   MITBIH_LT: The MIT-BIH Long Term Database             **
+%   MITBIH_NSR: The MIT-BIH Normal Sinus Rhythm Database     ***
 %   LTAF: The Long-Term AF Database
 %   PICTArrhythmia: St. Petersburg Institute of Cardiological Technics 12-lead Arrhythmia Database.
 %   EUSTT: European ST-T Database.
@@ -32,7 +32,8 @@ function DR4ECG
     
     % Collect ecg data
     disp('Reading data files');
-    datasets = {'MITBIH_AtrialFibrilation','MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'LTAF', 'PICTArrhythmia'};
+    %datasets = {'MITBIH_AtrialFibrilation','MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'LTAF', 'PICTArrhythmia'};
+    datasets = {'MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'PICTArrhythmia'};
     disp('Testing data generation functions...');
 
     for i = 1 : length(datasets)

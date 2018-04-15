@@ -16,7 +16,7 @@ for i = 1 : len
     marfile = strcat(NAME,'.mat');
     marfile = fullfile(target_folder,marfile);
      % Datafiles{i} = NAME;
-    [M,AANNOT,AATRTIME] = rawReaderMITBIH_NSR( NAME );  % read the '212' format data
+     [M,TIME,~, ~]= rawReaderMITBIH_NSR( NAME );  % read the '212' format data
     ATRTIME = AATRTIME(1);
     ANNOT = [0];
     save(marfile,'M','ANNOT','ATRTIME');    

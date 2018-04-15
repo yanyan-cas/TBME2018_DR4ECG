@@ -1,6 +1,5 @@
-function  [M,TIME,ANNOT,ATRTIME] = rawReaderMITBIH_NSR( filename )
+function  [M,TIME,ANNOT,ATRTIME]  = rawReaderPICTArrhythmia(filename)
 %read the data and annotation of MIT_BIH.
-%filename 100,102,102...
 %M--samples
 %TIME--samples occur time
 %ANNOT--annotation
@@ -10,8 +9,8 @@ function  [M,TIME,ANNOT,ATRTIME] = rawReaderMITBIH_NSR( filename )
 %  Klaus Rheinberger (University of Innsbruck)
 
 filename = char(filename);
-PATH = '../MITBIH_NSR';
-HEADERFILE= strcat(filename,'.hea');      % .hea
+PATH = '/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET/PICT12LEAD_Arrhythmia';
+HEADERFILE= strcat(filename,'.hea.txt');      % .hea
 ATRFILE= strcat(filename,'.atr');         % .atr
 DATAFILE=strcat(filename,'.dat');         % .dat
 
@@ -23,6 +22,13 @@ A = sscanf(line, '%*s %d %d %d',[1,3]);
 channel = A(1);
 frequency = A(2);
 SAMPLENUM = A(3);          %2*SAMPLENUM
+
+code_format = zeros(1, 12);
+gain = zeros(1, 12);
+valid_bit =  zeros(1, 12);
+zero_line = zeros(1, 12);
+firstvalue = zeros(1, 12);
+
 for k = 1 : channel           
     line = fgetl(hea_file);
     A = sscanf(line, '%*s %d %d %d %d %d',[1,5]);
@@ -31,30 +37,46 @@ for k = 1 : channel
     valid_bit(k) = A(3);          
     zero_line(k) = A(4);      
     firstvalue(k) = A(5);
-end;
-fclose(hea_file);
-if code_format ~= [212,212]
-    error('binary formats different to 212.');
 end
+fclose(hea_file);
+
+  if any(code_format(1:12) ~= 16)
+            error('binary formats different to 16, try modify the code for another format!');
+  end
 
 %% deal with .dat file
 dataPath = fullfile(PATH, DATAFILE);             % '212'
 data_file = fopen(dataPath,'r');
-A = fread(data_file, [3, SAMPLENUM], 'uint8')';  % matrix with 3 rows, each 8 bits long, = 2*12bit
+A = fread(data_file, [24, SAMPLENUM], 'uint8')';  % matrix with 3 rows, each 8 bits long, = 2*12bit
 fclose(data_file);
-Ml2H = bitshift(A(:,2), -4);        
-Ml1H = bitand(A(:,2), 15);          
-PRL = bitshift(bitand(A(:,2),8),9);              % sign-bit
-PRR = bitshift(bitand(A(:,2),128),5);            % sign-bit
-M( : , 1) = bitshift(Ml1H,8)+ A(:,1)-PRL;
-M( : , 2) = bitshift(Ml2H,8)+ A(:,3)-PRR;
+
+% for i = 1 : 12
+%     M( :, i) = bitshift(A(:, 2*i), 8) + A(:, 1) - bitshift(bitand(A(:,2*i),128),9);
+% end
+M( :, 1) = bitshift(A(:, 2), 8) + A(:, 1) - bitshift(bitand(A(:,2),128),9);
+M( :, 2) = bitshift(A(:, 4), 8) + A(:, 3) - bitshift(bitand(A(:,4),128),9);
+M( :, 3) = bitshift(A(:, 6), 8) + A(:, 5) - bitshift(bitand(A(:,6),128),9);
+M( :, 4) = bitshift(A(:, 8), 8) + A(:, 7) - bitshift(bitand(A(:,8),128),9);
+M( :, 5) = bitshift(A(:, 10), 8) + A(:, 9) - bitshift(bitand(A(:,10),128),9);
+M( :, 6) = bitshift(A(:, 12), 8) + A(:, 11) - bitshift(bitand(A(:,12),128),9);
+M( :, 7) = bitshift(A(:, 14), 8) + A(:, 13) - bitshift(bitand(A(:,14),128),9);
+M( :, 8) = bitshift(A(:, 16), 8) + A(:, 15) - bitshift(bitand(A(:,16),128),9);
+M( :, 9) = bitshift(A(:, 18), 8) + A(:, 17) - bitshift(bitand(A(:,18),128),9);
+M( :, 10) = bitshift(A(:, 20), 8) + A(:, 19) - bitshift(bitand(A(:,20),128),9);
+M( :, 11) = bitshift(A(:, 22), 8) + A(:, 21) - bitshift(bitand(A(:,22),128),9);
+M( :, 12) = bitshift(A(:, 24), 8) + A(:, 23) - bitshift(bitand(A(:,24),128),9);
 
 if M(1,:) ~= firstvalue
     error('inconsistency in the first bit values');
 end
 
-M( : , 1) = (M( : , 1)) / 200;
-M( : , 2) = (M( : , 2)) / 200;
+for i = 1 : 12
+    M( : , i) = (M( : , i) - zero_line(i)) / gain(i);
+end
+
+TIME = (0:(SAMPLENUM-1)) / frequency;
+TIME = TIME';
+
 %% deal with .atr file
 atrPath = fullfile(PATH, ATRFILE);  % attribute file with annotation data
 atr_file = fopen(atrPath,'r');
@@ -84,11 +106,11 @@ while i <= saa
     else
         ATRTIME=[ATRTIME;bitshift(bitand(A(i,2),3),8)+A(i,1)];
         ANNOT=[ANNOT;bitshift(A(i,2),-2)];
-   end;
+    end
    i=i+1;
-end;
+end
 ANNOT(length(ANNOT)) = [];       % last line = EOF (=0)
 ATRTIME(length(ATRTIME)) = [];   % last line = EOF
-ATRTIME= cumsum(ATRTIME);
-end
+ATRTIME= (cumsum(ATRTIME)) / frequency;
 
+end
