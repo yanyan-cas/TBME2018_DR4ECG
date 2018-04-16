@@ -43,24 +43,30 @@ function DR4ECG
     %
     X = readDatasets(datasets{1}, dataFlag);
     
-    %% 2. Data Sample Extraction
-    DATA = preprocessing(datasets{1}, X);
-    
-    
-    
-     % Test prewhitening
-    disp('Testing prewhitening...');
-    try 
-        X = prewhiten(X);
-    catch e
-        disp(e);
-        warning('Prewhitening failed! Press any key to continue tests...');
-        pause
+    %% 2. Data Sample Extraction MITBIHArrhythmia Database finished.
+    data = preprocessing(datasets{1}, X);
+    clear X
+    len = length(data);
+    %tmp = zeros(len, 1);
+    sampleNum = 0;
+    for i = 1 : len
+        data(i).Count = length(data(i).LABEL);
+        sampleNum = sampleNum + data(i).Count;
     end
-    unscaled_X = X;
-    X = X - min(X(:));
-    X = X / max(X(:));
+    sampleSet = zeros(sampleNum, 340);
+    label = zeros(sampleNum, 1);
+    tmp = 1;  
     
+    for i = 1 : len
+        for j = 1 :  data(i).Count   
+           sampleSet(j + tmp-1, :) = data(i).DATA(j, :);     
+           label(j + tmp-1) = data(i).LABEL(j);
+        end      
+         tmp = tmp + data(i).Count;
+    end
+    
+%% 3. Try PCA first
+    intrinsic_dim(sampleSet, 'MLE');
      % Test all intrinsic dimensionality estimators
     disp('Testing intrinsic dimensionality estimators...');
     techniques = {'CorrDim', 'NearNbDim', 'GMST', 'PackingNumbers', 'EigValue', 'MLE'};
