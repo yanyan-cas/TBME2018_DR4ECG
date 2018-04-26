@@ -66,109 +66,38 @@ function DR4ECG
     end
     
 %% 3. Try PCA first
-    intrinsic_dim(sampleSet, 'MLE');
-     % Test all intrinsic dimensionality estimators
-    disp('Testing intrinsic dimensionality estimators...');
-    techniques = {'CorrDim', 'NearNbDim', 'GMST', 'PackingNumbers', 'EigValue', 'MLE'};
-    for i=1:length(techniques)
-        try
-            intrinsic_dim(X, techniques{i});
-        catch e
-            disp(e);
-            warning(['Intrinsic dimensionality estimation using ' techniques{i} ' failed! Press any key to continue tests...']);
-            pause
-        end
-    end
+    % Intrinsic dimensionality estimation
     
-     % Test all unsupervised dimension reduction techniques
-     disp('Testing dimensionality reduction techniques...');
-     techniques = {'PCA', 'MDS', 'ProbPCA', 'FactorAnalysis', 'GPLVM', 'Sammon', 'Isomap', ...
-         'LandmarkIsomap', 'LLE', 'Laplacian', 'HessianLLE', 'LTSA', 'MVU', 'CCA', 'LandmarkMVU', ...
-         'FastMVU', 'DiffusionMaps', 'KernelPCA', 'GDA', 'SNE', 'SymSNE', 'tSNE', 'LPP', 'NPE', ...
-         'LLTSA', 'SPE', 'Autoencoder', 'LLC', 'ManifoldChart', 'CFA'};
-     for i=1:length(techniques)
-         
-         % Test the dimension reduction technique
-         try
-             if any(strcmpi(techniques{i}, {'GPLVM', 'CFA'}))
-                [mappedX, mapping] = compute_mapping(unscaled_X, techniques{i}, 2);
-             else
-                [mappedX, mapping] = compute_mapping(X, techniques{i}, 2);
-             end
-             if any(strcmpi(techniques{i}, {'Isomap', 'LandmarkIsomap', 'LLE', 'Laplacian', 'MVU', 'CCA', 'FastMVU', 'LPP', 'NPE', 'LLTSA'}))
-                 [mappedX, mapping] = compute_mapping(X, techniques{i}, 2, 'adaptive');
-             end
-         catch e
-             disp(e);
-             warning(['Technique ' techniques{i} ' failed! Press any key to continue tests...']);
-             pause
-         end
-      
-        % Test the out-of-sample extension code
-         if any(strcmpi(techniques{i}, {'PCA', 'LPP', 'NPE', 'LLTSA', 'SPCA', 'PPCA', 'FA'}))
-             try
-                 out_of_sample(X, mapping);
-             catch e
-                 disp(e);
-                 warning(['Out-of-sample extension for technique ' techniques{i} ' failed! Press any key to continue tests...']);
-                 pause                
-             end
-        end
-         
-         % Test reconstruction code
-         if any(strcmpi(techniques{i}, {'PCA', 'LPP', 'NPE', 'LLTSA', 'SPCA', 'PPCA', 'FA', 'Autoencoder'}))
-             try
-                 reconstruct_data(mappedX, mapping);
-             catch e
-                 disp(e);
-                 warning(['Reconstruction for technique ' techniques{i} ' failed! Press any key to continue tests...']);
-                 pause
-           end
-       end
-    end
-   
-     % Test approximate out-of-sample function
-     try
-         out_of_sample_est(X, X, mappedX);
-     catch e
-         disp(e);
-         warning(['Approximate out-of-sample extension failed! Press any key to continue tests...']);
-         pause                
-     end
+     [mappedX, mapping] = pca(sampleSet(1:100, :), 100);
      
-     % Test all supervised dimension reduction techniques
-     labels = double(X(:,1) > .5) + 1;
-     X = [labels X];
-     techniques = {'LDA', 'NCA', 'MCML', 'LMNN'};
-     for i=1:length(techniques)
-         
-         % Test the actual technique
-         try
-             [mappedX, mapping] = compute_mapping(X, techniques{i}, 2);
-        catch e
-            disp(e);
-            warning(['Technique ' techniques{i} ' failed! Press any key to continue tests...']);
-            pause
-        end
-        
-        % Test out-of-sample extension
-        try
-            out_of_sample(X(:,2:end), mapping);
-        catch e
-            disp(e);
-            warning(['Out-of-sample extension for technique ' techniques{i} ' failed! Press any key to continue tests...']);
-            pause
-        end
-        
-        % Test reconstruction code
-        try
-            reconstruct_data(mappedX, mapping);
-        catch e
-            disp(e);
-            warning(['Reconstruction for technique ' techniques{i} ' failed! Press any key to continue tests...']);
-            pause
-        end
-        
-    end
-    disp('All tests completed!');    
+     
+     
+      t_point = bsxfun(@minus, point, mapping.mean) * mapping.M;
+     
+     
     
+    
+    
+   
+    
+    
+    
+%% ?. Softmax Classifier
+    
+    %Use softmaxTrain.m to train a multi-class classifier. 
+    softmaxInput = mappedX;
+    
+saeSoftmaxTheta = 0.005 * randn(hiddenSizeL2 * numClasses, 1);
+addpath minFunc/
+options.Method = 'lbfgs'; 
+options.maxIter = 200;	
+options.display = 'on';
+softmaxModel = softmaxTrain(hiddenSizeL2, numClasses, lambda, ...
+                            train2Features, trainlabels, options);
+                        
+                        
+                        
+                        
+                        
+                        
+                        
