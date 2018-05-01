@@ -65,36 +65,95 @@ function DR4ECG
          tmp = tmp + data(i).Count;
     end
     
-%% 3. Try PCA first
-    % Intrinsic dimensionality estimation
+    label = remapLabels(label);
     
-     [mappedX, mapping] = pca(sampleSet(1:100, :), 100);
-     
-     
-     
-      t_point = bsxfun(@minus, point, mapping.mean) * mapping.M;
-     
-     
+%% 3. Prepare for the Training and Testing samples ( Consider the label distribution)
+    x1 = sampleSet(label==1, 1:340);
+    x2 = sampleSet(label==2, 1:340);
+    x3 = sampleSet(label==3, 1:340);
+    x4 = sampleSet(label==4, 1:340);
+    x5 = sampleSet(label==5, 1:340);
     
+    m = randperm(size(x1, 1), round(size(x1, 1) * 0.8));
+    trainX1 = x1(m, 1: 340);
+    trainLabelX1 = ones(size(trainX1, 1),1);
+    x1(m, :) = [];
+    testX1 = x1;
+    testLabelX1 = ones(size(testX1, 1),1);
     
+    m = randperm(size(x2, 1), round(size(x2, 1) * 0.8));
+    trainX2 = x2(m, 1: 340);
+    trainLabelX2 = 2 * ones(size(trainX2, 1),1);
+    x2(m, :) = [];
+    testX2 = x2;
+    testLabelX2 = 2 * ones(size(testX2, 1),1);
     
+    m = randperm(size(x3, 1), round(size(x3, 1) * 0.8));
+    trainX3 = x3(m, 1: 340);
+    trainLabelX3 = 3 * ones(size(trainX3, 1),1);
+    x3(m, :) = [];
+    testX3 = x3;
+    testLabelX3 = 3 * ones(size(testX3, 1),1);
+        
+    m = randperm(size(x4, 1), round(size(x4, 1) * 0.8));
+    trainX4 = x4(m, 1: 340);
+    trainLabelX4 = 4 * ones(size(trainX4, 1),1);
+    x4(m, :) = [];
+    testX4 = x4;
+    testLabelX4 = 4 * ones(size(testX4, 1),1);
+    
+    m = randperm(size(x5, 1), round(size(x5, 1) * 0.8));
+    trainX5 = x5(m, 1: 340);
+    trainLabelX5 = 5 * ones(size(trainX5, 1),1);
+    x5(m, :) = [];
+    testX5 = x5;
+    testLabelX5 = 5 * ones(size(testX5, 1),1);
+    
+    trainExp = [trainX1' trainX2' trainX3' trainX4' trainX5']';
+    trainLabelExp = [trainLabelX1' trainLabelX2' trainLabelX3' trainLabelX4' trainLabelX5']';
+    
+    testExp = [testX1' testX2' testX3' testX4' testX5']';
+    testLabelExp = [testLabelX1' testLabelX2' testLabelX3' testLabelX4' testLabelX5']';
+    
+    clear x1 x2 x3 x4 x5 x6
+    clear trainX1 trainX2 trainX3 trainX4 trainX5
+    clear testX1 testX2 testX3 testX4 testX5
+    clear sampleSet
+    clear data label testLabelX1 testLabelX2 testLabelX3 testLabelX4 testLabelX5
+    clear trainLabelX1 trainLabelX2 trainLabelX3 trainLabelX4 trainLabelX5
+    
+%% 4. Try PCA first
+    
+    [mappedX, mapping] = pca(trainExp );
    
+    % Once get the feature/representation matrix, train the Softmax
+    % classifier
+    
+    trainFeatures = mappedX;
+    trainLabel = trainLabelExp;
+    testFeatures = pcamapping(testExp, mapping);
+    testLabel = testLabelExp;
+    
+%% Using the same mapping as the 
     
     
     
-%% ?. Softmax Classifier
+%% Classifier Training and Test
     
-    %Use softmaxTrain.m to train a multi-class classifier. 
-    softmaxInput = mappedX;
+    numClasses = 5;
+    addpath minFunc/
+    options.Method = 'lbfgs'; 
+    options.maxIter = 200;	
+    options.display = 'on';    
+    lambda = 1e-4;        % weight decay parameter      
+
+    softmaxModel = softmaxTrain(size(trainFeatures, 1), numClasses, lambda, trainFeatures, trainLabels, options);
     
-saeSoftmaxTheta = 0.005 * randn(hiddenSizeL2 * numClasses, 1);
-addpath minFunc/
-options.Method = 'lbfgs'; 
-options.maxIter = 200;	
-options.display = 'on';
-softmaxModel = softmaxTrain(hiddenSizeL2, numClasses, lambda, ...
-                            train2Features, trainlabels, options);
-                        
+    
+    [pred] = softmaxPredict(softmaxModel, testFeatures);
+    
+    
+    
                         
                         
                         
