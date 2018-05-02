@@ -135,19 +135,25 @@ function DR4ECG
     trainFeatures = mappedX;
     trainLabel = trainLabelExp;    
     
-%         numClasses = 5;
-%     addpath minFunc/
-%     options.Method = 'lbfgs'; 
-%     options.maxIter = 200;	
-%     options.display = 'on';    
-%     lambda = 1e-4;        % weight decay parameter      
-%     softmaxTheta = 0.005 * randn(size(trainFeatures, 2) * numClasses, 1);
-%     softmaxModel = softmaxTrain(size(trainFeatures, 2), numClasses, lambda, trainFeatures', trainLabel, softmaxTheta, options);
-%     
+    numClasses = 5;
+    addpath minFunc/
+    options.Method = 'lbfgs'; 
+    options.maxIter = 200;	
+    options.display = 'on';    
+    lambda = 1e-4;        % weight decay parameter      
+    softmaxTheta = 0.005 * randn(size(trainFeatures, 2) * numClasses, 1);
+    softmaxModel = softmaxTrain(size(trainFeatures, 2), numClasses, lambda, trainFeatures', trainLabel, softmaxTheta, options);
+     
     % Using the same mapping as the 
-    testFeatures = pcamapping(testExp, mapping);
+    testFeatures = bsxfun(@minus, testExp, mapping.mean) * mapping.M;
     testLabel = testLabelExp;
     
+    [pred] = softmaxPredict(softmaxModel, testFeatures);
+    acc = mean(testLabel(:) == pred(:));
+    fprintf('Test Accuracy: %0.3f%%\n', acc * 100);
+%================================================================
+
+
 %% 5. MDS
     
 
