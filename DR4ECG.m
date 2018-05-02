@@ -122,35 +122,85 @@ function DR4ECG
     clear data label testLabelX1 testLabelX2 testLabelX3 testLabelX4 testLabelX5
     clear trainLabelX1 trainLabelX2 trainLabelX3 trainLabelX4 trainLabelX5
     
+  %  intrinsic_dim(trainExp, 'CorrDim'); %check the intrinsic_dim
+    
 %% 4. Try PCA first
     
-    [mappedX, mapping] = pca(trainExp );
+    % For no_dims (2nd parameter of pca), you can also specify a number between 0 and 1, determining 
+    % the amount of variance you want to retain in the PCA step.
+    [mappedX, mapping] = pca(trainExp, 0.99);
    
     % Once get the feature/representation matrix, train the Softmax
-    % classifier
-    
+    % classifier in the last section
     trainFeatures = mappedX;
-    trainLabel = trainLabelExp;
+    trainLabel = trainLabelExp;    
+    
+%         numClasses = 5;
+%     addpath minFunc/
+%     options.Method = 'lbfgs'; 
+%     options.maxIter = 200;	
+%     options.display = 'on';    
+%     lambda = 1e-4;        % weight decay parameter      
+%     softmaxTheta = 0.005 * randn(size(trainFeatures, 2) * numClasses, 1);
+%     softmaxModel = softmaxTrain(size(trainFeatures, 2), numClasses, lambda, trainFeatures', trainLabel, softmaxTheta, options);
+%     
+    % Using the same mapping as the 
     testFeatures = pcamapping(testExp, mapping);
     testLabel = testLabelExp;
     
-%% Using the same mapping as the 
+%% 5. MDS
+    
+
+    DistMatrix = squareform(pdist(trainExp));
+    
+    options.X0 = [];
+    % embed using SMACOF
+    disp('Embedding the intrinsic geometry of the Swiss roll swiss into R^3 using SMACOF (no acceleration)...')
+    options.X0 = [swiss.X,swiss.Y,swiss.Z];
+    options.method = 'smacof';
+    [~, ~] = mds(DistMatrix,options);
+
+    
+
+
+%% 6. Isomap
+    
+    isomap(A, no_dims, 12);
+    
+
+%% 7. Kernel PCA
     
     
+    
+    
+%% 8. MVU
+    
+
+    
+
+%% 9. Diffusion Map
+    
+    
+    
+%% 10. 
+
+
+%% 10. 
     
 %% Classifier Training and Test
-    
     numClasses = 5;
     addpath minFunc/
     options.Method = 'lbfgs'; 
     options.maxIter = 200;	
     options.display = 'on';    
     lambda = 1e-4;        % weight decay parameter      
-
-    softmaxModel = softmaxTrain(size(trainFeatures, 1), numClasses, lambda, trainFeatures, trainLabels, options);
-    
+    softmaxTheta = 0.005 * randn(hiddenSizeL3 * numClasses, 1);
+    softmaxModel = softmaxTrain(size(trainFeatures, 2), numClasses, lambda, trainFeatures, trainLabel, softmaxTheta, options);
     
     [pred] = softmaxPredict(softmaxModel, testFeatures);
+    
+    acc = mean(testLabel(:) == pred(:));
+    fprintf('Test Accuracy: %0.3f%%\n', acc * 100);
     
     
     
