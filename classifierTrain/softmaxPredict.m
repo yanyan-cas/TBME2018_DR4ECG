@@ -7,7 +7,7 @@ function [pred] = softmaxPredict(softmaxModel, data)
 theta = softmaxModel.optTheta;
 pred = zeros(1, size(data, 2));
 eachValue = zeros(size(theta,1),size(data,2));
-eachValue = theta * data;
+eachValue = data * theta;
 [~,pred] = max(eachValue);
 
 end

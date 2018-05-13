@@ -1,4 +1,4 @@
-function DR4ECG
+function DR4ECG_PCA
 % DR4ECG Tests all functionalities of the dimension reduction
 % and all open source ecg signal dataset
 %
@@ -28,15 +28,15 @@ function DR4ECG
 %   LTST:  Long-Term ST Database
 %   
 
-    addpath('/Users/Yanyan/Documents/MATLAB/DATASET/ECG_DATASET');
+    addpath('C:\Users\HP\Desktop\TBME2018_DR4ECG');
     
     % Collect ecg data
     disp('Reading data files');
     %datasets = {'MITBIH_AtrialFibrilation','MITBIH_Arrhythmia', 'MITBIH_LT', 'MITBIH_NSR', 'LTAF', 'PICTArrhythmia'};
     datasets = {'MITBIH_Arrhythmia'}; %, 'MITBIH_LT', 'PICTArrhythmia'
     dataFlag.MITARRHY = 1;
-    dataFlag.MITLT = 1;
-    dataFlag.MITPICT = 1;
+    dataFlag.MITLT = 0;
+    dataFlag.MITPICT = 0;
     disp('Testing data generation functions...');
 
     %% 1. Raw Data input
@@ -122,138 +122,34 @@ function DR4ECG
     clear data label testLabelX1 testLabelX2 testLabelX3 testLabelX4 testLabelX5
     clear trainLabelX1 trainLabelX2 trainLabelX3 trainLabelX4 trainLabelX5
     
-  %  no_dims = intrinsic_dim(trainExp, 'CorrDim'); %check the intrinsic_dim
+%     dimesion = intrinsicDim(trainExp, 'MLE');
+%     save dimesion
+%     
     
 %% 4. Try PCA first
-    
-    % For no_dims (2nd parameter of pca), you can also specify a number between 0 and 1, determining 
-    % the amount of variance you want to retain in the PCA step.
-    [mappedX, mapping] = pca(trainExp, 14);
-   
-    % Once get the feature/representation matrix, train the Softmax
-    % classifier in the last section
+    [mappedX, mapping] = pca(trainExp, 0.99);
     trainFeatures = mappedX;
-    trainLabel = trainLabelExp(1:1000);    
-    
+    trainLabel = trainLabelExp;    
+
+    % Classifier Training and Test
     numClasses = 5;
     addpath minFunc/
     options.Method = 'lbfgs'; 
-    options.maxIter = 10;	
+    options.maxIter = 400;	
     options.display = 'on';    
     lambda = 1e-4;        % weight decay parameter      
     softmaxTheta = 0.005 * randn(size(trainFeatures, 2) * numClasses, 1);
     softmaxModel = softmaxTrain(size(trainFeatures, 2), numClasses, lambda, trainFeatures', trainLabel, softmaxTheta, options);
-     
-    % Using the same mapping as the 
-    testFeatures = bsxfun(@minus, testExp(1:100,:), mapping.mean) * mapping.M;
+
+    testFeatures = bsxfun(@minus, testExp, mapping.mean) * mapping.M;
     testLabel = testLabelExp;
-    
     [pred] = softmaxPredict(softmaxModel, testFeatures);
     acc = mean(testLabel(:) == pred(:));
-    fprintf('Test Accuracy: %0.3f%%\n', acc * 100);
-% %================================================================
-
-%% 5. Isomap
-
-%      [mappedX, mapping] =  isomap(trainExp, no_dims, 12);
-%      
-%     
-% 
-% 
-%         
-%  % Precomputations for speed
-%             if strcmp(mapping.name, 'Isomap')
-%                 invVal = inv(diag(mapping.val));
-%                 [val, index] = sort(mapping.val, 'descend');
-%                 mapping.landmarks = 1:size(mapping.X, 1);
-%             else
-%                 val = mapping.beta .^ (1 / 2);
-%                 [val, index] = sort(real(diag(val)), 'descend');
-%             end
-% 
-%             val = val(1:mapping.no_dims);
-%             meanD1 = mean(mapping.DD .^ 2, 1);
-%             meanD2 = mean(mean(mapping.DD .^ 2));
-%             
-%             % Process all points (notice that in this implementation 
-%             % out-of-sample points are not used as landmark points)
-%             point = testExp;
-%             t_point = repmat(0, [size(point, 1) mapping.no_dims]);
-%             for i=1:size(point, 1)
-%                 
-%                 % Compute distance of new sample to training points
-%                 point = points(i,:);
-%                 tD = L2_distance(point', mapping.X');
-%                 [tmp, ind] = sort(tD); 
-%                 tD(ind(mapping.k + 2:end)) = 0;
-%                 tD = sparse(tD);
-%                 tD = dijkstra([0 tD; tD' mapping.D], 1);
-%                 tD = tD(mapping.landmarks + 1) .^ 2;
-% 
-%                 % Compute point embedding
-%                 subB = -.5 * (bsxfun(@minus, tD, mean(tD, 2)) - meanD1 - meanD2);
-%                 if strcmp(mapping.name, 'LandmarkIsomap')
-%                     vec = subB * mapping.alpha * mapping.invVal;
-%                     vec = vec(:,index(1:mapping.no_dims));
-%                 else
-%                     vec = subB * mapping.vec * mapping.val;
-%                     vec = vec(:,index(1:mapping.no_dims));
-%                 end
-%                 t_point(i,:) = real(vec .* sqrt(val)');
-%             end
-% 
-%             trainFeatures = mappedX;
-%             trainLabel = trainLabelExp;    
-% 
-%             numClasses = 5;
-%             addpath minFunc/
-%             options.Method = 'lbfgs'; 
-%             options.maxIter = 200;	
-%             options.display = 'on';    
-%             lambda = 1e-4;        % weight decay parameter      
-%             softmaxTheta = 0.005 * randn(size(trainFeatures, 2) * numClasses, 1);
-%             softmaxModel = softmaxTrain(size(trainFeatures, 2), numClasses, lambda, trainFeatures', trainLabel, softmaxTheta, options);
-% 
-% 
-% %% 6. Kernel PCA
-%      [mappedX, mapping] = kernelPCA(X, no_dims, varargin);
-%     
-%     
+    fprintf('Test Accuracy: %0.3f%%\n', acc * 100);      
+    save('PCA/PCAexpResults.mat','testLabel','pred');
+    save('DATAUSING/PCAexpData.mat', 'trainExp','testExp','trainLabelExp','testLabelExp');
+    save('PCA/PCAparameters.mat','mappedX', 'mapping');
     
-%% 8. MVU
     
 
-    
-
-%% 9. Diffusion Map
-    
-    
-    
-%% 10. 
-
-
-%% 10. 
-    
-%% Classifier Training and Test
-    numClasses = 5;
-    addpath minFunc/
-    options.Method = 'lbfgs'; 
-    options.maxIter = 200;	
-    options.display = 'on';    
-    lambda = 1e-4;        % weight decay parameter      
-    softmaxTheta = 0.005 * randn(hiddenSizeL3 * numClasses, 1);
-    softmaxModel = softmaxTrain(size(trainFeatures, 2), numClasses, lambda, trainFeatures, trainLabel, softmaxTheta, options);
-    
-    [pred] = softmaxPredict(softmaxModel, testFeatures);
-    
-    acc = mean(testLabel(:) == pred(:));
-    fprintf('Test Accuracy: %0.3f%%\n', acc * 100);
-    
-    
-    
-                        
-                        
-                        
-                        
-                        
                         
